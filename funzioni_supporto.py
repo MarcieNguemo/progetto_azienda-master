@@ -28,8 +28,10 @@ def scelta():
         except ValueError:
             print("Campo non accettato")
         except EOFError:
-            print("Errore imprevisto, contatta l'ammistrazione, chiusura del progrmma")
+            print("WTF? CTRL + d ma cosa combini")
             break
+        except:
+            print("Errore critico, non so perché sei qui")
 
 if __name__ == '__main__':
     scelta()
