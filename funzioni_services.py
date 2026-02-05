@@ -1,37 +1,13 @@
 import datetime
 import mysql.connector
 import time
-
-from script_utili.genera_database import crea_database
-from script_utili.genera_tabella import crea_tabella
-
-try:
-    conn = mysql.connector.connect(
-        user="root",
-        password="",
-        host="localhost",
-        database="azienda_generation")
-except mysql.connector.errors.ProgrammingError:
-    crea_database()
-    print("database creato...")
-    time.sleep(3)
-    crea_tabella()
-    print("tabella creata...")
-    time.sleep(3)
-    conn = mysql.connector.connect(
-        user="root",
-        password="",
-        host="localhost",
-        database="azienda_generation")
-
+from funzioni_database import create_connection, esegui_query, esegui_query_param, esegui_query_select
 
 
 def inserisci_fattura():
-    cursor = conn.cursor()
-    cursor.execute("SELECT MAX(id_fattura) FROM fattura")
 
-    risultato = cursor.fetchone()
-    id_massimo = risultato[0]
+    risultato = esegui_query_select("SELECT MAX(id_fattura) FROM fattura")
+    id_massimo = risultato[0][0]
 
     id_fattura = (id_massimo if id_massimo is not None else 0) + 1 #AIUTO GEMINI (calcolo se id è nullo perchè 0 fatture, lo trasforma in 0)
     destinatario = input("Inserisci il destinatario: ").strip()
@@ -47,12 +23,9 @@ def inserisci_fattura():
         print("Errore: Destinatario o Servizio mancanti. Operazione annullata.")
         return
 
-
-
     iva = importo / 1.22
 
     imponibile = importo - iva
-
 
     #impostiamo come data di fattura direttamente la data odierna in cui la stiamo registrando
     data_fattura = datetime.date.today()
@@ -64,12 +37,14 @@ def inserisci_fattura():
     INSERT INTO fattura (id_fattura,destinatario, bene_servizio_venduto, importo, iva, imponibile, data_fattura)
     VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
-    cursor.execute(q_inserisci_fattura, dati)
-    conn.commit()
+
+    esegui_query_param(q_inserisci_fattura, dati)
+
     print("Complimenti, fattura inserita!")
 
 
 def mostra_fatture():
+    conn = create_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM fattura")
 
@@ -83,3 +58,4 @@ def mostra_fatture():
 
     # print(cursor.description)
     cursor.close()
+    conn.close()
