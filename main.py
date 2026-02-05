@@ -6,6 +6,8 @@ from funzioni_supporto import scelta
 
 #commento a caso test
 
+#questo programma per funzionare necessita di un db chiamato azienda_generation e che mysql sia attivo
+
 def main():
     scelta()
 
