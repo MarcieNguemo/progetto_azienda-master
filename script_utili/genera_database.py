@@ -10,4 +10,8 @@ def crea_database():
     cursor.execute(q_crea_database)
 
 if __name__ == '__main__':
-    crea_database()
+    try:
+        crea_database()
+        print("Database creato con successo")
+    except mysql.connector.errors.DatabaseError:
+        print("Il database è già esistente")

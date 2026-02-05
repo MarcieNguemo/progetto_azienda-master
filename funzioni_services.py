@@ -1,10 +1,29 @@
 import datetime
 import mysql.connector
-conn = mysql.connector.connect(
-    user="root",
-    password="",
-    host="localhost",
-    database="azienda_generation")
+import time
+
+from script_utili.genera_database import crea_database
+from script_utili.genera_tabella import crea_tabella
+
+try:
+    conn = mysql.connector.connect(
+        user="root",
+        password="",
+        host="localhost",
+        database="azienda_generation")
+except mysql.connector.errors.ProgrammingError:
+    crea_database()
+    print("database creato...")
+    time.sleep(3)
+    crea_tabella()
+    print("tabella creata...")
+    time.sleep(3)
+    conn = mysql.connector.connect(
+        user="root",
+        password="",
+        host="localhost",
+        database="azienda_generation")
+
 
 
 def inserisci_fattura():

@@ -8,7 +8,7 @@ def crea_tabella():
     cursor = conn.cursor()
 
     q_crea_fatture = """
-    create table IF NOT EXISTS fattura(
+    create table fattura(
          id_fattura INT PRIMARY KEY,
          emittente VARCHAR(80) DEFAULT "Azienda Zurich" NOT NULL,
          destinatario VARCHAR(80) NOT NULL,
@@ -22,4 +22,8 @@ def crea_tabella():
     cursor.execute(q_crea_fatture)
 
 if __name__ == '__main__':
-    crea_tabella()
+    try:
+        crea_tabella()
+        print("tabella creata con successo")
+    except mysql.connector.errors.ProgrammingError:
+        print("Tabella già esistente")
